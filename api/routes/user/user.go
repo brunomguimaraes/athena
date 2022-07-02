@@ -7,8 +7,6 @@ import (
 	"net/http"
 )
 
-// Get all users
-
 type User struct {
 	UserID        int    `json:"id"`
 	UserFirstName string `json:"firstname"`
@@ -23,12 +21,14 @@ type JsonResponse struct {
 }
 
 // response and request handlers
+
+// Get all users
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	db := database.InitializeDB()
 
 	utils.PrintMessage("Fetching user data...")
 
-	// Get all movies from movies table that don't have movieID = "1"
+	// Get all users from users table
 	rows, err := db.Query("SELECT * FROM users")
 
 	// check errors
@@ -57,9 +57,7 @@ func GetUsers(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// Create a movie
-
-// response and request handlers
+// Create an user
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	userFirstName := r.FormValue("firstname")
 	userLastName := r.FormValue("lastname")
