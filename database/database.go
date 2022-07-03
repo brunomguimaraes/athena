@@ -2,8 +2,10 @@ package database
 
 import (
 	utils "athena/utils"
-	"database/sql"
 	"fmt"
+
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 )
 
 const (
@@ -14,10 +16,13 @@ const (
 	dbName   = "athena"
 )
 
-func InitializeDB() *sql.DB {
+func InitializeDB() *gorm.DB {
 	utils.PrintMessage("Initializing DB...")
+
 	psqlConnectionString := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbName)
-	db, err := sql.Open("postgres", psqlConnectionString)
+
+	db, err := gorm.Open(postgres.Open(psqlConnectionString), &gorm.Config{})
+
 	utils.CheckError(err)
 
 	return db
