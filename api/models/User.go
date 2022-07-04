@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	UserID        int    `gorm:"primary_key;auto_increment" json:"id"`
@@ -9,8 +11,9 @@ type User struct {
 	UserEmail     string `gorm:"size:100;not null;unique" json:"email"`
 }
 
-func (u *User) GetUsers(db *gorm.DB) (*[]User, error) {
+func (u *User) FindAllUsers(db *gorm.DB) (*[]User, error) {
 	var err error
+
 	users := []User{}
 	err = db.Debug().Model(&User{}).Limit(100).Find(&users).Error
 	if err != nil {
