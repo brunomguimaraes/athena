@@ -36,7 +36,7 @@ func (server *Server) Initialize() {
 		fmt.Printf("Connected database")
 	}
 
-	server.DB.Debug().AutoMigrate(&models.User{}) //database migration
+	server.DB.Debug().AutoMigrate(&models.User{}, &models.Group{}) //database migration
 
 	server.Router = mux.NewRouter()
 
