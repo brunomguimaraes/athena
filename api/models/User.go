@@ -2,6 +2,9 @@ package models
 
 import (
 	"errors"
+	"html"
+	"net/mail"
+	"strings"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -16,11 +19,47 @@ type User struct {
 	Password      string    `gorm:"size:100;not null;" json:"password"`
 	CreatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Group         Group     `gorm:"foreignkey:GroupID"`
+	// Group         Group     `gorm:"foreignkey:GroupID"`
 }
 
 func Hash(password string) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+}
+
+func (u *User) Setup() {
+	u.UserID = 0
+	u.UserFirstName = html.EscapeString(strings.TrimSpace(u.UserFirstName))
+	u.UserLastName = html.EscapeString(strings.TrimSpace(u.UserLastName))
+	u.UserEmail = html.EscapeString(strings.TrimSpace(u.UserEmail))
+	u.CreatedAt = time.Now()
+	u.UpdatedAt = time.Now()
+}
+
+func (u *User) Validate(action string) error {
+	switch strings.ToLower(action) {
+	// TODO: add validation stuff
+	// case "update":
+
+	// 	return nil
+
+	default:
+		if u.UserFirstName == "" {
+			return errors.New("Required User First Name")
+		}
+		if u.UserLastName == "" {
+			return errors.New("Required User Last Name")
+		}
+		if u.Password == "" {
+			return errors.New("Required User Password")
+		}
+		if u.UserEmail == "" {
+			return errors.New("Required User Email")
+		}
+		if _, err := mail.ParseAddress(u.UserEmail); err != nil {
+			return errors.New("Invalid Email Address")
+		}
+		return nil
+	}
 }
 
 func VerifyPassword(hashedPassword, password string) error {
