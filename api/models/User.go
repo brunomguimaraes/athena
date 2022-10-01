@@ -12,13 +12,14 @@ import (
 )
 
 type User struct {
-	UserID        int       `gorm:"primary_key;auto_increment" json:"id"`
-	UserFirstName string    `gorm:"size:255;not null;" json:"firstname"`
-	UserLastName  string    `gorm:"size:255;not null;" json:"lastname"`
-	UserEmail     string    `gorm:"size:100;not null;unique" json:"email"`
-	Password      string    `gorm:"size:100;not null;" json:"password"`
-	CreatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	UserID        int        `gorm:"primary_key;auto_increment" json:"id"`
+	UserFirstName string     `gorm:"size:255;not null;" json:"firstname"`
+	UserLastName  string     `gorm:"size:255;not null;" json:"lastname"`
+	UserEmail     string     `gorm:"size:100;not null;unique" json:"email"`
+	Password      string     `gorm:"size:100;not null;" json:"password"`
+	CreatedAt     time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt     time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt     *time.Time `gorm:"default:null" json:"deleted_at"`
 	// Group         Group     `gorm:"foreignkey:GroupID"`
 }
 
@@ -33,6 +34,7 @@ func (u *User) Setup() {
 	u.UserEmail = html.EscapeString(strings.TrimSpace(u.UserEmail))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
+	u.DeletedAt = nil
 }
 
 func (u *User) Validate(action string) error {
