@@ -7,6 +7,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -43,6 +44,18 @@ func (u *User) Validate(action string) error {
 	// case "update":
 
 	// 	return nil
+
+	case "login":
+		if u.Password == "" {
+			return errors.New("Required Password")
+		}
+		if u.Email == "" {
+			return errors.New("Required Email")
+		}
+		if err := checkmail.ValidateFormat(u.Email); err != nil {
+			return errors.New("Invalid Email")
+		}
+		return nil
 
 	default:
 		if u.FirstName == "" {
