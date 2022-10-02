@@ -7,18 +7,20 @@ import (
 	"strings"
 	"time"
 
+	"github.com/badoux/checkmail"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	UserID        int       `gorm:"primary_key;auto_increment" json:"id"`
-	UserFirstName string    `gorm:"size:255;not null;" json:"firstname"`
-	UserLastName  string    `gorm:"size:255;not null;" json:"lastname"`
-	UserEmail     string    `gorm:"size:100;not null;unique" json:"email"`
-	Password      string    `gorm:"size:100;not null;" json:"password"`
-	CreatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt     time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	Id        int        `gorm:"primary_key;auto_increment" json:"id"`
+	FirstName string     `gorm:"size:255;not null;" json:"firstname"`
+	LastName  string     `gorm:"size:255;not null;" json:"lastname"`
+	Email     string     `gorm:"size:100;not null;unique" json:"email"`
+	Password  string     `gorm:"size:100;not null;" json:"password"`
+	CreatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt *time.Time `gorm:"default:null" json:"deleted_at"`
 	// Group         Group     `gorm:"foreignkey:GroupID"`
 }
 
@@ -27,12 +29,13 @@ func Hash(password string) ([]byte, error) {
 }
 
 func (u *User) Setup() {
-	u.UserID = 0
-	u.UserFirstName = html.EscapeString(strings.TrimSpace(u.UserFirstName))
-	u.UserLastName = html.EscapeString(strings.TrimSpace(u.UserLastName))
-	u.UserEmail = html.EscapeString(strings.TrimSpace(u.UserEmail))
+	u.Id = 0
+	u.FirstName = html.EscapeString(strings.TrimSpace(u.FirstName))
+	u.LastName = html.EscapeString(strings.TrimSpace(u.LastName))
+	u.Email = html.EscapeString(strings.TrimSpace(u.Email))
 	u.CreatedAt = time.Now()
 	u.UpdatedAt = time.Now()
+	u.DeletedAt = nil
 }
 
 func (u *User) Validate(action string) error {
@@ -42,20 +45,32 @@ func (u *User) Validate(action string) error {
 
 	// 	return nil
 
+	case "login":
+		if u.Password == "" {
+			return errors.New("Required Password")
+		}
+		if u.Email == "" {
+			return errors.New("Required Email")
+		}
+		if err := checkmail.ValidateFormat(u.Email); err != nil {
+			return errors.New("Invalid Email")
+		}
+		return nil
+
 	default:
-		if u.UserFirstName == "" {
+		if u.FirstName == "" {
 			return errors.New("Required User First Name")
 		}
-		if u.UserLastName == "" {
+		if u.LastName == "" {
 			return errors.New("Required User Last Name")
 		}
 		if u.Password == "" {
 			return errors.New("Required User Password")
 		}
-		if u.UserEmail == "" {
+		if u.Email == "" {
 			return errors.New("Required User Email")
 		}
-		if _, err := mail.ParseAddress(u.UserEmail); err != nil {
+		if _, err := mail.ParseAddress(u.Email); err != nil {
 			return errors.New("Invalid Email Address")
 		}
 		return nil
