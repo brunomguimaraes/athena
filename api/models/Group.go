@@ -12,7 +12,6 @@ type Group struct {
 	GroupName string    `gorm:"size:255;not null;" json:"firstname"`
 	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
-	Users     []User    `gorm:"foreignkey:Id"`
 }
 
 func (group *Group) FindGroupByID(db *gorm.DB, gid uint32) (*Group, error) {

@@ -21,7 +21,8 @@ type User struct {
 	CreatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
 	DeletedAt *time.Time `gorm:"default:null" json:"deleted_at"`
-	// Group         Group     `gorm:"foreignkey:GroupID"`
+	GroupId   *int       `gorm:"default:null" json:"group_id"`
+	Group     *Group     `gorm:"foreignkey:GroupId"`
 }
 
 func Hash(password string) ([]byte, error) {
