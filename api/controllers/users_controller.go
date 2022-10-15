@@ -73,31 +73,31 @@ func (server *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
 	responses.JSON(w, http.StatusCreated, userCreated)
 }
 
-// func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
+func (server *Server) DeleteUser(w http.ResponseWriter, r *http.Request) {
 
-// 	vars := mux.Vars(r)
+	vars := mux.Vars(r)
 
-// 	user := models.User{}
+	user := models.User{}
 
-// 	uid, err := strconv.ParseUint(vars["id"], 10, 32)
-// 	if err != nil {
-// 		responses.ERROR(w, http.StatusBadRequest, err)
-// 		return
-// 	}
-// 	tokenID, err := auth.ExtractTokenID(r)
-// 	if err != nil {
-// 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
-// 		return
-// 	}
-// 	if tokenID != 0 && tokenID != uint32(uid) {
-// 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
-// 		return
-// 	}
-// 	_, err = user.DeleteUser(server.DB, uint32(uid))
-// 	if err != nil {
-// 		responses.ERROR(w, http.StatusInternalServerError, err)
-// 		return
-// 	}
-// 	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
-// 	responses.JSON(w, http.StatusNoContent, "")
-// }
+	uid, err := strconv.ParseUint(vars["id"], 10, 32)
+	if err != nil {
+		responses.ERROR(w, http.StatusBadRequest, err)
+		return
+	}
+	// 	tokenID, err := auth.ExtractTokenID(r)
+	// 	if err != nil {
+	// 		responses.ERROR(w, http.StatusUnauthorized, errors.New("Unauthorized"))
+	// 		return
+	// 	}
+	// 	if tokenID != 0 && tokenID != uint32(uid) {
+	// 		responses.ERROR(w, http.StatusUnauthorized, errors.New(http.StatusText(http.StatusUnauthorized)))
+	// 		return
+	// 	}
+	_, err = user.DeleteUserByID(server.DB, uint32(uid))
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	w.Header().Set("Entity", fmt.Sprintf("%d", uid))
+	responses.JSON(w, http.StatusNoContent, "")
+}
