@@ -123,3 +123,13 @@ func (u *User) FindUserByID(db *gorm.DB, uid uint32) (*User, error) {
 	}
 	return u, err
 }
+
+func (u *User) DeleteUserByID(db *gorm.DB, uid uint32) (int64, error) {
+
+	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).Delete(&User{})
+
+	if db.Error != nil {
+		return 0, db.Error
+	}
+	return db.RowsAffected, nil
+}
