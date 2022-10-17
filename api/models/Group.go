@@ -15,8 +15,7 @@ type Group struct {
 }
 
 func (group *Group) FindGroupByID(db *gorm.DB, gid uint32) (*Group, error) {
-	var err error
-	err = db.Debug().Model(Group{}).Where("id = ?", gid).Take(&group).Error
+	err := db.Debug().Model(Group{}).Where("id = ?", gid).Take(&group).Error
 	if err != nil {
 		return &Group{}, err
 	}
@@ -24,4 +23,15 @@ func (group *Group) FindGroupByID(db *gorm.DB, gid uint32) (*Group, error) {
 		return &Group{}, errors.New("Group Not Found")
 	}
 	return group, err
+}
+
+func (g *Group) FindAllGroups(db *gorm.DB) (*[]Group, error) {
+	var err error
+
+	groups := []Group{}
+	err = db.Debug().Model(&Group{}).Limit(100).Find(&groups).Error
+	if err != nil {
+		return &[]Group{}, err
+	}
+	return &groups, err
 }

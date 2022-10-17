@@ -3,6 +3,7 @@ package models
 import (
 	"errors"
 	"html"
+	"log"
 	"net/mail"
 	"strings"
 	"time"
@@ -106,6 +107,34 @@ func (u *User) SaveUser(db *gorm.DB) (*User, error) {
 
 	var err error
 	err = db.Debug().Create(&u).Error
+	if err != nil {
+		return &User{}, err
+	}
+	return u, nil
+}
+
+func (u *User) UpdateAUser(db *gorm.DB, uid uint32) (*User, error) {
+
+	// Secure the password
+	err := u.SecurePassword()
+	if err != nil {
+		log.Fatal(err)
+	}
+	db = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&User{}).UpdateColumns(
+		map[string]interface{}{
+			"password":   u.Password,
+			"firstName":  u.FirstName,
+			"lastName":   u.LastName,
+			"group_id":   u.GroupId,
+			"email":      u.Email,
+			"updated_at": time.Now(),
+		},
+	)
+	if db.Error != nil {
+		return &User{}, db.Error
+	}
+	// This is the display the updated user
+	err = db.Debug().Model(&User{}).Where("id = ?", uid).Take(&u).Error
 	if err != nil {
 		return &User{}, err
 	}
