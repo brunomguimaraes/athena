@@ -17,7 +17,7 @@ func (server *Server) initializeRoutes() {
 	server.Router.HandleFunc("/auth/login", middlewares.SetMiddlewareJSON(server.Login)).Methods("POST")
 
 	//Grocery routes
-	server.Router.HandleFunc("/grocery/item", middlewares.SetMiddlewareJSON(server.CreateGrocery)).Methods("GET")
+	server.Router.HandleFunc("/grocery/item", middlewares.SetMiddlewareJSON(server.CreateGrocery)).Methods("POST")
 
 	//Group routes
 	server.Router.HandleFunc("/groups", middlewares.SetMiddlewareJSON(server.GetGroups)).Methods("GET")

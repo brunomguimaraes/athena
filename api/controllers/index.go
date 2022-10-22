@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -44,5 +45,8 @@ func (server *Server) Initialize() {
 
 func (server *Server) Run(address string) {
 	fmt.Println("Listening to port 8080")
-	log.Fatal(http.ListenAndServe(address, server.Router))
+
+	//add CORS
+	handler := cors.Default().Handler(server.Router)
+	log.Fatal(http.ListenAndServe(address, handler))
 }

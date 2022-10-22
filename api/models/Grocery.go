@@ -40,3 +40,14 @@ func (grocery *Grocery) SaveGrocery(db *gorm.DB) (*Grocery, error) {
 	}
 	return grocery, nil
 }
+
+func (g *Group) FindAllGroceries(db *gorm.DB) (*[]Grocery, error) {
+	var err error
+
+	groceries := []Grocery{}
+	err = db.Debug().Model(&Grocery{}).Limit(100).Find(&groceries).Error
+	if err != nil {
+		return &[]Grocery{}, err
+	}
+	return &groceries, err
+}

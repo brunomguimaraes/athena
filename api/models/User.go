@@ -42,10 +42,25 @@ func (u *User) Setup() {
 
 func (u *User) Validate(action string) error {
 	switch strings.ToLower(action) {
-	// TODO: add validation stuff
-	// case "update":
 
-	// 	return nil
+	case "update":
+		if u.FirstName == "" {
+			return errors.New("Required User First Name")
+		}
+		if u.LastName == "" {
+			return errors.New("Required User Last Name")
+		}
+		if u.Password == "" {
+			return errors.New("Required User Password")
+		}
+		if u.Email == "" {
+			return errors.New("Required User Email")
+		}
+		if _, err := mail.ParseAddress(u.Email); err != nil {
+			return errors.New("Invalid Email Address")
+		}
+
+		return nil
 
 	case "login":
 		if u.Password == "" {
