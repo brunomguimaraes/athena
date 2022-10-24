@@ -8,10 +8,11 @@ import (
 )
 
 type Group struct {
-	GroupID   int       `gorm:"primary_key;auto_increment" json:"id"`
-	GroupName string    `gorm:"size:255;not null;" json:"firstname"`
-	CreatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
-	UpdatedAt time.Time `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	GroupID   int        `gorm:"primary_key;auto_increment" json:"id"`
+	GroupName string     `gorm:"size:255;not null;" json:"firstname"`
+	CreatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
+	UpdatedAt time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
+	DeletedAt *time.Time `gorm:"default:null" json:"deleted_at"`
 }
 
 func (group *Group) FindGroupByID(db *gorm.DB, gid uint32) (*Group, error) {
