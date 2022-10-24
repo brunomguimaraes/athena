@@ -1,9 +1,11 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"github.com/lib/pq"
+	"gorm.io/gorm"
 )
 
 type GroceryList struct {
@@ -14,6 +16,18 @@ type GroceryList struct {
 	DeletedAt  *time.Time     `gorm:"default:null" json:"deleted_at"`
 	GroupId    *int           `gorm:"default:null" json:"group_id"`
 	Group      *Group         `gorm:"foreignkey:GroupId"`
+}
+
+func (g *GroceryList) FindGroceryListByID(db *gorm.DB, uid uint32) (*GroceryList, error) {
+	var err error
+	err = db.Debug().Model(GroceryList{}).Where("id = ?", uid).Take(&g).Error
+	if err != nil {
+		return &GroceryList{}, err
+	}
+	if errors.Is(db.Error, gorm.ErrRecordNotFound) {
+		return &GroceryList{}, errors.New("User Not Found")
+	}
+	return g, err
 }
 
 // func (grocery *Grocery) Setup() {

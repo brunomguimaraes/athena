@@ -39,3 +39,14 @@ func (server *Server) CreateGrocery(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Location", fmt.Sprintf("%s%s/%d", r.Host, r.URL.Path, groceryCreated.Id))
 	responses.JSON(w, http.StatusCreated, groceryCreated)
 }
+
+func (server *Server) GetGroceries(w http.ResponseWriter, r *http.Request) {
+	Grocery := models.Grocery{}
+
+	Groceries, err := Grocery.FindAllGroceries(server.DB)
+	if err != nil {
+		responses.ERROR(w, http.StatusInternalServerError, err)
+		return
+	}
+	responses.JSON(w, http.StatusOK, Groceries)
+}

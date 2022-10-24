@@ -21,8 +21,10 @@ type Grocery struct {
 func (grocery *Grocery) Setup() {
 	grocery.Id = 0
 	grocery.Name = html.EscapeString(strings.TrimSpace(grocery.Name))
+	grocery.Description = html.EscapeString(strings.TrimSpace(grocery.Description))
 	grocery.CreatedAt = time.Now()
 	grocery.UpdatedAt = time.Now()
+	grocery.DeletedAt = nil
 }
 
 func (grocery *Grocery) Validate() error {
@@ -43,7 +45,7 @@ func (grocery *Grocery) SaveGrocery(db *gorm.DB) (*Grocery, error) {
 	return grocery, nil
 }
 
-func (g *Group) FindAllGroceries(db *gorm.DB) (*[]Grocery, error) {
+func (grocery *Grocery) FindAllGroceries(db *gorm.DB) (*[]Grocery, error) {
 	var err error
 
 	groceries := []Grocery{}
