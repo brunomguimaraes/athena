@@ -11,7 +11,7 @@ import (
 
 type Grocery struct {
 	Id          int        `gorm:"primary_key;auto_increment" json:"id"`
-	Name        string     `gorm:"size:255;not null;unique" json:"title"`
+	Name        string     `gorm:"size:255;not null;unique" json:"name"`
 	Description string     `gorm:"size:255;" json:"description"`
 	CreatedAt   time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"created_at"`
 	UpdatedAt   time.Time  `gorm:"default:CURRENT_TIMESTAMP" json:"updated_at"`
